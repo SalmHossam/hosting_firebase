@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Messages</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #messages {
+      list-style-type: none;
+      padding: 0;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Firebase Messages</h1>
+  <ul id="messages"></ul>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js";
+    import { getDatabase, ref, get, child,onValue } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js";
+    //import { getDatabase, ref, onValue } from "firebase/database";
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        databaseURL: "https://cloudlab1-7f832-default-rtdb.firebaseio.com",
+        projectId: "cloudlab1-7f832",
+        storageBucket: "cloudlab1-7f832.appspot.com",
+        messagingSenderId: "121606503732",
+        appId: "1:121606503732:web:50323a4fbb703666eff961"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    
+    // Get a reference to the Firestore and Database services
+    const firestore = getFirestore(app);
+    const database = getDatabase(app);
+
+    // Reference to the 'notifications' node in the Realtime Database
+    const messagesRef = ref(database, 'notifications');
+
+    // Function to fetch and display messages
+   // Function to fetch and display messages
+   
+  const messagesList = document.getElementById('messages');
+
+// Function to update the messages in the UI
+function updateMessages(snapshot) {
+  messagesList.innerHTML = '';
+
+  snapshot.forEach((childSnapshot) => {
+    const message = childSnapshot.val();
+    const li = document.createElement('li');
+    li.className = 'message';
+    li.textContent = JSON.stringify(message, null, 2); // Display message as JSON with indentation
+    messagesList.appendChild(li);
+  });
+}
+
+
+// Attach an event listener to the 'notifications' node
+onValue(messagesRef, (snapshot) => {
+  updateMessages(snapshot);
+}, {
+  onlyOnce: true // Set onlyOnce to true if you want to fetch data only once
+});
+  </script>
+</body>
+</html>
